@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Środowiska wirtualne
+venv/
+.venv/
+env/
+
+# Flask
+instance/
+.webassets-cache
+
+# Sekrety i konfiguracja lokalna
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Bazy i logi lokalne
+*.db
+*.sqlite3
+*.log
+logs/
+
+# IDE i system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
