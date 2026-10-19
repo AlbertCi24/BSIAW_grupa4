@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_macros.html" import post_button %}
+{% block title %}Panel admina | Kinoteka{% endblock %}
+{% block content %}
+<h2>Panel admina: użytkownicy</h2>
+<p>Treści (filmy, recenzje, komentarze) admin usuwa bezpośrednio na stronach filmów.</p>
+<table border="1" cellpadding="4">
+<thead>
+<tr><th>ID</th><th>Nazwa</th><th>E-mail</th><th>Rola</th><th>Status</th><th>Założone</th><th>Akcja</th></tr>
+</thead>
+<tbody>
+{% for user in users %}
+<tr>
+<td>{{ user.id }}</td>
+<td><a href="{{ url_for('auth.profile', username=user.username) }}">{{ user.username }}</a></td>
+<td>{{ user.email }}</td>
+<td>{{ user.role }}</td>
+<td>{{ "aktywne" if user.is_active else "zablokowane" }}</td>
+<td>{{ user.created_at|dt }}</td>
+<td>
+{% if user.id != current_user.id %}
+{{ post_button(url_for('admin.toggle_active', user_id=user.id), 'Odblokuj' if not user.is_active else 'Zablokuj') }}
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

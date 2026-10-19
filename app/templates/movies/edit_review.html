@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Edycja recenzji | Kinoteka{% endblock %}
+{% block content %}
+<h2>Edycja recenzji: {{ review.movie.title }}</h2>
+<form method="post" novalidate>
+{{ form.hidden_tag() }}
+{{ field(form.rating, min=1, max=10) }}
+{{ field(form.content, rows=8, cols=60) }}
+<p>{{ form.submit() }}</p>
+</form>
+<p><a href="{{ url_for('movies.detail', movie_id=review.movie_id) }}">Anuluj</a></p>
+{% endblock %}

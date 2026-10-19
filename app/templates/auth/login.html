@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Logowanie | Kinoteka{% endblock %}
+{% block content %}
+<h2>Logowanie</h2>
+<form method="post" novalidate>
+{{ form.hidden_tag() }}
+{{ field(form.username, autocomplete="username") }}
+{{ field(form.password, autocomplete="current-password") }}
+<p>{{ form.submit() }}</p>
+</form>
+<p>Nie masz konta? <a href="{{ url_for('auth.register') }}">Zarejestruj się</a></p>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} | Kinoteka{% endblock %}
+{% block content %}
+<h2>{{ user.username }}</h2>
+<p>Konto od {{ user.created_at|dt }}{% if user.is_admin %}, administrator{% endif %}</p>
+
+<h3>Recenzje ({{ reviews|length }})</h3>
+{% if reviews %}
+<ul>
+{% for review in reviews %}
+<li>
+<a href="{{ url_for('movies.detail', movie_id=review.movie_id, _anchor='review-%d' % review.id) }}">{{ review.movie.title }}</a>:
+{{ review.rating }}/10 ({{ review.created_at|dt }})
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>Brak recenzji.</p>
+{% endif %}
+{% endblock %}

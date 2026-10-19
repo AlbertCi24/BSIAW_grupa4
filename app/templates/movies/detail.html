@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field, post_button %}
+{% block title %}{{ movie.title }} | Kinoteka{% endblock %}
+{% block content %}
+<h2>{{ movie.title }}{% if movie.year %} ({{ movie.year }}){% endif %}</h2>
+
+{% if movie.poster_filename %}
+<p><img src="{{ url_for('movies.poster', filename=movie.poster_filename) }}" alt="Plakat: {{ movie.title }}" width="300"></p>
+{% endif %}
+
+<p>
+Średnia ocena: {% if avg_rating %}<strong>{{ "%.1f"|format(avg_rating) }}/10</strong> ({{ reviews|length }} recenzji){% else %}brak ocen{% endif %}<br>
+Dodał(a): {% if movie.added_by %}<a href="{{ url_for('auth.profile', username=movie.added_by.username) }}">{{ movie.added_by.username }}</a>{% else %}konto usunięte{% endif %}, {{ movie.created_at|dt }}
+</p>
+
+{% if movie.description %}<p>{{ movie.description|nl2br }}</p>{% endif %}
+
+{% if current_user.is_authenticated and (current_user.is_admin or current_user.id == movie.added_by_id) %}
+{{ post_button(url_for('movies.delete', movie_id=movie.id), 'Usuń film') }}
+{% endif %}
+
+<hr>
+<h3>Twoja recenzja</h3>
+{% if not current_user.is_authenticated %}
+<p><a href="{{ url_for('auth.login', next=request.path) }}">Zaloguj się</a>, żeby dodać recenzję.</p>
+{% elif own_review %}
+<p>Recenzja już dodana. <a href="{{ url_for('movies.edit_review', review_id=own_review.id) }}">Edytuj</a></p>
+{% else %}
+<form method="post" action="{{ url_for('movies.add_review', movie_id=movie.id) }}" novalidate>
+{{ review_form.hidden_tag() }}
+{{ field(review_form.rating, min=1, max=10) }}
+{{ field(review_form.content, rows=6, cols=60) }}
+<p>{{ review_form.submit() }}</p>
+</form>
+{% endif %}
+
+<hr>
+<h3>Recenzje</h3>
+{% for review in reviews %}
+<article id="review-{{ review.id }}">
+<h4>
+<a href="{{ url_for('auth.profile', username=review.author.username) }}">{{ review.author.username }}</a>:
+{{ review.rating }}/10
+</h4>
+<p><small>{{ review.created_at|dt }}{% if review.updated_at %}, edytowano {{ review.updated_at|dt }}{% endif %}</small></p>
+<p>{{ review.content|nl2br }}</p>
+
+{% if current_user.is_authenticated %}
+{% if current_user.id == review.user_id %}<p><a href="{{ url_for('movies.edit_review', review_id=review.id) }}">Edytuj</a></p>{% endif %}
+{% if current_user.is_admin or current_user.id == review.user_id %}{{ post_button(url_for('movies.delete_review', review_id=review.id), 'Usuń recenzję') }}{% endif %}
+{% endif %}
+
+<h5>Komentarze ({{ review.comments|length }})</h5>
+<ul>
+{% for comment in review.comments %}
+<li>
+<a href="{{ url_for('auth.profile', username=comment.author.username) }}">{{ comment.author.username }}</a>
+({{ comment.created_at|dt }}): {{ comment.content|nl2br }}
+{% if current_user.is_authenticated and (current_user.is_admin or current_user.id == comment.user_id) %}
+{{ post_button(url_for('movies.delete_comment', comment_id=comment.id), 'Usuń komentarz') }}
+{% endif %}
+</li>
+{% endfor %}
+</ul>
+
+{% if current_user.is_authenticated %}
+<form method="post" action="{{ url_for('movies.add_comment', review_id=review.id) }}" novalidate>
+{{ comment_form.hidden_tag() }}
+<label for="comment-{{ review.id }}">Komentarz</label><br>
+{{ comment_form.content(id="comment-%d" % review.id, rows=3, cols=60) }}<br>
+<button type="submit">Dodaj komentarz</button>
+</form>
+{% endif %}
+<hr>
+</article>
+{% else %}
+<p>Brak recenzji. Bądź pierwszy!</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Rejestracja | Kinoteka{% endblock %}
+{% block content %}
+<h2>Rejestracja</h2>
+<form method="post" novalidate>
+{{ form.hidden_tag() }}
+{{ field(form.username, autocomplete="username") }}
+{{ field(form.email, autocomplete="email") }}
+{{ field(form.password, autocomplete="new-password") }}
+{{ field(form.password2, autocomplete="new-password") }}
+<p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

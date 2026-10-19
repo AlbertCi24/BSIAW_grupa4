@@ -1,0 +1,16 @@
+{# Pole formularza z etykietą i błędami walidacji. #}
+{% macro field(f) %}
+<p>
+{{ f.label }}<br>
+{{ f(**kwargs) }}
+{% for error in f.errors %}<br><strong>{{ error }}</strong>{% endfor %}
+</p>
+{% endmacro %}
+
+{# Akcje zmieniające dane (usuwanie, wylogowanie) idą tylko POST-em z tokenem CSRF. #}
+{% macro post_button(action, label) %}
+<form method="post" action="{{ action }}">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<button type="submit">{{ label }}</button>
+</form>
+{% endmacro %}

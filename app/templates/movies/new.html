@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Dodaj film | Kinoteka{% endblock %}
+{% block content %}
+<h2>Dodaj film</h2>
+<form method="post" enctype="multipart/form-data" novalidate>
+{{ form.hidden_tag() }}
+{{ field(form.title) }}
+{{ field(form.year) }}
+{{ field(form.description, rows=6, cols=60) }}
+{{ field(form.poster, accept="image/jpeg,image/png,image/webp") }}
+<p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

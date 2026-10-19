@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Filmy</h2>
+
+<form method="get" action="{{ url_for('movies.index') }}">
+<label for="q">Szukaj po tytule</label>
+<input type="search" id="q" name="q" value="{{ q }}" maxlength="100">
+<button type="submit">Szukaj</button>
+{% if q %}<a href="{{ url_for('movies.index') }}">Wyczyść</a>{% endif %}
+</form>
+
+{% if rows %}
+<table border="1" cellpadding="4">
+<thead>
+<tr><th>Tytuł</th><th>Rok</th><th>Średnia ocena</th><th>Recenzje</th></tr>
+</thead>
+<tbody>
+{% for movie, avg_rating, review_count in rows %}
+<tr>
+<td><a href="{{ url_for('movies.detail', movie_id=movie.id) }}">{{ movie.title }}</a></td>
+<td>{{ movie.year or "" }}</td>
+<td>{% if avg_rating %}{{ "%.1f"|format(avg_rating) }}{% else %}brak{% endif %}</td>
+<td>{{ review_count }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p>{% if q %}Nic nie znaleziono.{% else %}Nie ma jeszcze żadnych filmów.{% endif %}</p>
+{% endif %}
+
+<p>
+{% if page > 1 %}<a href="{{ url_for('movies.index', q=q or None, page=page - 1) }}">Poprzednia</a>{% endif %}
+{% if has_next %}<a href="{{ url_for('movies.index', q=q or None, page=page + 1) }}">Następna</a>{% endif %}
+</p>
+{% endblock %}

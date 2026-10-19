@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Błąd {{ code }} | Kinoteka{% endblock %}
+{% block content %}
+<h2>Błąd {{ code }}</h2>
+<p>{{ message }}</p>
+<p><a href="{{ url_for('movies.index') }}">Wróć do listy filmów</a></p>
+{% endblock %}
