@@ -1,0 +1,5 @@
+# Jednolite końce linii (LF) w repo, niezależnie od systemu.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.webp binary
